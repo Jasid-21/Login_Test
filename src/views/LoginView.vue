@@ -6,8 +6,12 @@
           <div class="form-content">
             <h3 class="title">Inicio de sesión</h3>
             <div class="fields-container">
-              <FieldContainer name="Usuario"></FieldContainer>
-              <FieldContainer name="Clave" :is-password="true"></FieldContainer>
+              <FieldContainer name="Usuario" @text-changed="userChanged"
+                text="Admin">
+              </FieldContainer>
+              <FieldContainer name="Clave" :is-password="true" @text-changed="passwordChanged"
+               text="userChanged">
+              </FieldContainer>
             </div>
 
             <div class="password-recovery-container">
@@ -20,7 +24,7 @@
                 <span for="forgot">Olvidé mi clave/usuario</span>
               </div>
             </div>
-            <button class="login-btn">
+            <button class="login-btn" @click.prevent="requestLogin">
               Ingresar
             </button>
 
@@ -37,6 +41,24 @@
 
 <script setup lang="ts">
 import FieldContainer from '@/components/FieldContainer.vue';
+import { useAuthStore } from '@/stores/auth';
+import { computed, ref } from 'vue';
+
+const auth = useAuthStore();
+const user = ref<string>('Admin');
+const pass = ref<string>('789456');
+
+const userChanged = (v: string) => {
+  user.value = v;
+}
+
+const passwordChanged = (v: string) => {
+  pass.value = v;
+}
+
+const requestLogin = () => {
+  auth.requestLogin(user.value, pass.value);
+}
 </script>
 
 <style scoped>
